@@ -11,7 +11,12 @@ public class ParkingLotOwner extends ParkingLotObserver {
     }
 
     @Override
-    public void publish() {
+    public void receiveNotificationOnParkingFull() {
+        System.out.print("Parking Lot Owner got notified");
+    }
+
+    @Override
+    public void receiveNotificationOnParkingSpaceAvailable() {
 
     }
 }

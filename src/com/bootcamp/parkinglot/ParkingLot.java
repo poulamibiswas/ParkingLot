@@ -8,6 +8,7 @@ public class ParkingLot {
     private final int totalSlots;
     private List<ParkingTicket> allottedParkingTickets;
     private List<ParkingLotObserver> observers;
+    private NotificationEvent event;
 
     public ParkingLot(int totalSlots) {
         this.totalSlots = totalSlots;
@@ -20,10 +21,10 @@ public class ParkingLot {
     }
 
     private void notifyAllObservers() {
-        this.observers.forEach(ParkingLotObserver::publish);
+        this.observers.forEach(ParkingLotObserver::receiveNotificationOnParkingFull);
     }
 
-    public ParkingTicket park() throws NoSlotAvailableException {
+    public ParkingTicket park(Car carToBeParked) throws NoSlotAvailableException {
 
         if (isSlotAvailable()) {
             ParkingTicket parkingticket = new ParkingTicket(UUID.randomUUID().toString());
@@ -35,8 +36,10 @@ public class ParkingLot {
     }
 
     private void notifyIfAllSlotsTaken() {
-        if (!this.isSlotAvailable())
-            this.notifyAllObservers();
+        if (!this.isSlotAvailable()) {
+            event = new ParkingFullEvent();
+            event.notifyObservers(observers);
+        }
     }
 
     private boolean isSlotAvailable() {
@@ -48,10 +51,15 @@ public class ParkingLot {
 
         if (!allottedParkingTickets.contains(parkingTicket))
             throw new InvalidParkingTicketException("Invalid parking ticket during unpark");
+        if (isFull()) {
+            notifyParkingSpaceAvailable();
+        }
+        return allottedParkingTickets.remove(parkingTicket);
+    }
 
-        boolean isUnparked = allottedParkingTickets.remove(parkingTicket);
-        notifyIfAllSlotsTaken();
-        return isUnparked;
+    private void notifyParkingSpaceAvailable() {
+        event = new SpaceAvailableEvent();
+        event.notifyObservers(observers);
     }
 
     public boolean isFull() {

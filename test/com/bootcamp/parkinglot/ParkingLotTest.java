@@ -1,33 +1,32 @@
 package com.bootcamp.parkinglot;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 import static junit.framework.TestCase.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class ParkingLotTest {
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Test
-    public void shouldBeAbleToParkCarIfSlotIsAvailable() throws NoSlotAvailableException {
-        ParkingLot parkingLot = new ParkingLot(100);
-        ParkingTicket parkingTicket = parkingLot.park();
-        assertNotNull(parkingTicket);
+    public void shouldBeAbleToParkCar() throws NoSlotAvailableException {
+        ParkingLot parkingLot = new ParkingLot(1);
+        Car carToBeParked = new Car("1234");
+        parkingLot.park(carToBeParked);
     }
 
-    @Test(expected = NoSlotAvailableException.class)
-    public void shouldNotBeAbleToParkCarIfSlotIsUnavailable() throws NoSlotAvailableException {
-        ParkingLot parkingLot = new ParkingLot(0);
-        ParkingTicket parkingTicket = parkingLot.park();
-        assertNull(parkingTicket);
-    }
 
     @Test
     public void shouldBeAbleToUnparkCarIfParked() throws InvalidParkingTicketException, NoSlotAvailableException {
         ParkingLot parkingLot = new ParkingLot(1);
-        ParkingTicket parkingTicket = parkingLot.park();
+        Car carToBeParked = new Car("1234");
+        ParkingTicket parkingTicket = parkingLot.park(carToBeParked);
         assertTrue(parkingLot.unpark(parkingTicket));
     }
 
@@ -42,7 +41,8 @@ public class ParkingLotTest {
     @Test(expected = InvalidParkingTicketException.class)
     public void shouldNotBeAbleToUnparkCarIfAlreadyUnparked() throws InvalidParkingTicketException, NoSlotAvailableException {
         ParkingLot parkingLot = new ParkingLot(1);
-        ParkingTicket parkingTicket = parkingLot.park();
+        Car carToBeParked = new Car("1234");
+        ParkingTicket parkingTicket = parkingLot.park(carToBeParked);
         assertTrue(parkingLot.unpark(parkingTicket));
         parkingLot.unpark(parkingTicket);
     }
@@ -50,7 +50,8 @@ public class ParkingLotTest {
     @Test
     public void shouldKnowWhenTheParkingIsFull() throws InvalidParkingTicketException, NoSlotAvailableException {
         ParkingLot parkingLot = new ParkingLot(1);
-        ParkingTicket parkingTicket = parkingLot.park();
+        Car carToBeParked = new Car("1234");
+        ParkingTicket parkingTicket = parkingLot.park(carToBeParked);
         assertTrue(parkingLot.isFull());
         parkingLot.unpark(parkingTicket);
         assertFalse(parkingLot.isFull());
@@ -63,8 +64,30 @@ public class ParkingLotTest {
         ParkingLotObserver securityPerson = Mockito.mock(SecurityPerson.class);
         parkingLot.attach(parkingLotOwner);
         parkingLot.attach(securityPerson);
-        parkingLot.park();
-        verify(parkingLotOwner, times(1)).publish();
-        verify(securityPerson, times(1)).publish();
+        Car carToBeParked = new Car("1234");
+        parkingLot.park(carToBeParked);
+        verify(parkingLotOwner, times(1)).receiveNotificationOnParkingFull();
+        verify(securityPerson, times(1)).receiveNotificationOnParkingFull();
     }
+
+    @Test
+    public void shouldNotifyAllConsumersWhenSpaceIsAvailable() throws NoSlotAvailableException, InvalidParkingTicketException {
+        ParkingLot parkingLot = new ParkingLot(1);
+        ParkingLotObserver parkingLotOwner = Mockito.mock(ParkingLotOwner.class);
+        parkingLot.attach(parkingLotOwner);
+        Car carToBeParked = new Car("1234");
+        ParkingTicket parkingTicket = parkingLot.park(carToBeParked);
+
+        parkingLot.unpark(parkingTicket);
+        verify(parkingLotOwner, times(1)).receiveNotificationOnParkingSpaceAvailable();
+    }
+
+    @Test
+    public void shouldBeAbleParkCarByAttendant() {
+        ParkingLot parkingLot = new ParkingLot(1);
+        Car carToBeParked = new Car("1234");
+        ParkingLotAttendant attendant = new ParkingLotAttendant(1);
+        //attendant.park(carToBeParked);
+    }
+
 }

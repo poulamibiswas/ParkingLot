@@ -11,7 +11,12 @@ public class SecurityPerson extends ParkingLotObserver {
     }
 
     @Override
-    public void publish() {
+    public void receiveNotificationOnParkingFull() {
+        System.out.print("Security Person got notified");
+    }
+
+    @Override
+    public void receiveNotificationOnParkingSpaceAvailable() {
 
     }
 }

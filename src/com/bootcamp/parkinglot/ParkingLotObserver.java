@@ -7,5 +7,7 @@ public abstract class ParkingLotObserver {
 
     protected ParkingLot parkingLot;
 
-    public abstract void publish();
+    public abstract void receiveNotificationOnParkingFull();
+
+    public  abstract void receiveNotificationOnParkingSpaceAvailable();
 }
