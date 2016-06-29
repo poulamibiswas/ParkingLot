@@ -1,5 +1,8 @@
 package com.bootcamp.parkinglot;
 
+import com.bootcamp.parkinglot.exception.InvalidParkingTicketException;
+import com.bootcamp.parkinglot.exception.NoSlotAvailableException;
+
 import java.util.*;
 
 /**

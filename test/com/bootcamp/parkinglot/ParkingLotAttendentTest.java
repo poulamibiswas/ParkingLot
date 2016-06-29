@@ -1,5 +1,6 @@
 package com.bootcamp.parkinglot;
 
+import com.bootcamp.parkinglot.exception.NoSlotAvailableException;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -19,5 +20,6 @@ public class ParkingLotAttendentTest {
 
     @Test
     public void shouldBeAbleToUnparkTheCar() {
+
     }
 }

@@ -1,11 +1,14 @@
 package com.bootcamp.parkinglot;
 
+import com.bootcamp.parkinglot.exception.InvalidParkingTicketException;
+import com.bootcamp.parkinglot.exception.NoSlotAvailableException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -87,7 +90,6 @@ public class ParkingLotTest {
         ParkingLot parkingLot = new ParkingLot(1);
         Car carToBeParked = new Car("1234");
         ParkingLotAttendant attendant = new ParkingLotAttendant(1);
-        //attendant.park(carToBeParked);
     }
 
 }

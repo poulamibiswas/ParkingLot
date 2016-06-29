@@ -1,4 +1,6 @@
-package com.bootcamp.parkinglot;
+package com.bootcamp.parkinglot.event;
+
+import com.bootcamp.parkinglot.ParkingLotObserver;
 
 import java.util.List;
 

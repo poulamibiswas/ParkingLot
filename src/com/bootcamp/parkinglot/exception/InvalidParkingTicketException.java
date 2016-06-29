@@ -1,4 +1,4 @@
-package com.bootcamp.parkinglot;
+package com.bootcamp.parkinglot.exception;
 
 public class InvalidParkingTicketException extends Throwable {
 
