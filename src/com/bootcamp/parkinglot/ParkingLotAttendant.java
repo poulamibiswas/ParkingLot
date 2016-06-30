@@ -2,6 +2,9 @@ package com.bootcamp.parkinglot;
 
 import com.bootcamp.parkinglot.exception.InvalidParkingTicketException;
 import com.bootcamp.parkinglot.exception.NoSlotAvailableException;
+import com.bootcamp.parkinglot.strategy.DefaultParkingStrategy;
+import com.bootcamp.parkinglot.strategy.EvenParkingStrategy;
+import com.bootcamp.parkinglot.strategy.ParkingStrategy;
 
 import java.util.*;
 
@@ -13,6 +16,12 @@ public class ParkingLotAttendant {
 
     Map<ParkingTicket, ParkingLot> parkingTicketParkingLotMap;
 
+    ParkingStrategy parkingStrategy;
+
+    public ParkingLotAttendant(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
+    }
+
     public ParkingLotAttendant(int numberOfParkingLot) {
         parkingLots = new ArrayList<>();
         for (int index = 0; index < numberOfParkingLot; index++)
@@ -20,16 +29,9 @@ public class ParkingLotAttendant {
         parkingTicketParkingLotMap = new HashMap<>();
     }
 
-    public ParkingTicket park(Car carToBeParked) throws NoSlotAvailableException {
-        for (ParkingLot parkingLot : parkingLots) {
-            if (!parkingLot.isFull()) {
-                parkingLot.park(carToBeParked);
-                ParkingTicket parkingTicket = new ParkingTicket(UUID.randomUUID().toString());
-                parkingTicketParkingLotMap.put(parkingTicket, parkingLot);
-                return parkingTicket;
-            }
-        }
-        throw new NoSlotAvailableException("No Slot is available");
+    public ParkingTicket park(Car carToBeParked, ParkingStrategy... parkingStrategies) throws NoSlotAvailableException {
+        parkingStrategy = (parkingStrategies.length == 0) ? new DefaultParkingStrategy() : parkingStrategies[0];
+        return parkingStrategy.parkTheCar(parkingLots, carToBeParked);
     }
 
     public boolean unpark(ParkingTicket parkingTicket) throws InvalidParkingTicketException {

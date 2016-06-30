@@ -4,7 +4,6 @@ import com.bootcamp.parkinglot.event.NotificationEvent;
 import com.bootcamp.parkinglot.event.ParkingFullEvent;
 import com.bootcamp.parkinglot.event.SpaceAvailableEvent;
 import com.bootcamp.parkinglot.exception.InvalidParkingTicketException;
-import com.bootcamp.parkinglot.exception.NoSlotAvailableException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +29,13 @@ public class ParkingLot {
         this.observers.forEach(ParkingLotObserver::receiveNotificationOnParkingFull);
     }
 
-    public ParkingTicket park(Car carToBeParked) throws NoSlotAvailableException {
-
-        if (isSlotAvailable()) {
-            ParkingTicket parkingticket = new ParkingTicket(UUID.randomUUID().toString());
-            allottedParkingTickets.add(parkingticket);
-            notifyIfAllSlotsTaken();
-            return parkingticket;
-        }
-        throw new NoSlotAvailableException("No slot is available");
-    }
+//    public ParkingTicket park(Car carToBeParked) throws NoSlotAvailableException {
+//        if (isSlotAvailable()) {
+//            notifyIfAllSlotsTaken();
+//            return allotTicketToParkingLot();
+//        }
+//        throw new NoSlotAvailableException("No slot is available");
+//    }
 
     private void notifyIfAllSlotsTaken() {
         if (!this.isSlotAvailable()) {
@@ -70,5 +66,15 @@ public class ParkingLot {
 
     public boolean isFull() {
         return !this.isSlotAvailable();
+    }
+
+    public int getNoOfAvailableSlots() {
+        return (this.totalSlots - this.allottedParkingTickets.size());
+    }
+
+    public ParkingTicket allotTicketToParkingLot() {
+        ParkingTicket parkingticket = new ParkingTicket(UUID.randomUUID().toString());
+        allottedParkingTickets.add(parkingticket);
+        return parkingticket;
     }
 }
